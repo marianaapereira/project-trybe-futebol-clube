@@ -11,6 +11,9 @@ const config: Options = {
     timezone: 'Z',
   },
   logging: false,
+  define: {
+    underscored: true,
+  },
 }
 
 export = config;
