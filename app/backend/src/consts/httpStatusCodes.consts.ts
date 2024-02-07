@@ -1,0 +1,8 @@
+export const HTTP_OK_STATUS = 200;
+export const HTTP_CREATED_STATUS = 201;
+export const HTTP_NO_CONTENT_STATUS = 204;
+export const HTTP_BAD_REQUEST_STATUS = 400;
+export const HTTP_UNAUTHORIZED_STATUS = 401;
+export const HTTP_NOT_FOUND_STATUS = 404;
+export const HTTP_CONFLICT_STATUS = 409;
+export const HTTP_UNPROCESSABLE_ENTITY_STATUS = 422;
