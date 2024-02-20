@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import TeamService from '../services/TeamService';
-
 import mapStatusHTTP from '../utils/mapStatusHTTP';
+import { HTTP_CREATED_STATUS, HTTP_OK_STATUS } from '../consts/httpStatusCodes.consts';
 
 export default class TeamController {
   constructor(
@@ -10,13 +10,13 @@ export default class TeamController {
 
   public async createTeam(req: Request, res: Response) {
     const serviceResponse = await this.teamService.createTeam(req.body);
-    res.status(201).json(serviceResponse.data);
+    res.status(HTTP_CREATED_STATUS).json(serviceResponse.data);
   }
 
   public async getAllTeams(_req: Request, res: Response) {
     const serviceResponse = await this.teamService.getAllTeams();
 
-    res.status(200).json(serviceResponse.data);
+    res.status(HTTP_OK_STATUS).json(serviceResponse.data);
   }
 
   public async getTeamById(req: Request, res: Response) {
@@ -28,6 +28,6 @@ export default class TeamController {
       return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
     }
 
-    res.status(200).json(serviceResponse.data);
+    res.status(HTTP_OK_STATUS).json(serviceResponse.data);
   }
 }
