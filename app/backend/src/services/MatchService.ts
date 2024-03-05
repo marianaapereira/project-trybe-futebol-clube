@@ -3,10 +3,12 @@ import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import MatchModel from '../models/MatchModel';
 import { NewEntity } from '../Interfaces';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
+import TeamService from './TeamService';
 
 export default class MatchService {
   constructor(
     private matchModel: IMatchModel = new MatchModel(),
+    private teamService = new TeamService(),
   ) { }
 
   public async createMatch(team: NewEntity<IMatch>): Promise<ServiceResponse<IMatch>> {

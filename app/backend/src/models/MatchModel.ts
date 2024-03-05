@@ -1,9 +1,15 @@
+// import { ITeamModel } from '../Interfaces/teams/ITeamModel';
 import SequelizeMatch from '../database/models/SequelizeMatch';
 import { IMatch } from '../Interfaces/matches/IMatch';
 import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import { NewEntity } from '../Interfaces';
+import TeamModel from './TeamModel';
 
-export default class TeamModel implements IMatchModel {
+export default class MatchModel implements IMatchModel {
+  constructor(
+    private teamModel: TeamModel = new TeamModel(),
+  ) { }
+
   private model = SequelizeMatch;
 
   async create(data: NewEntity<IMatch>): Promise<IMatch> {
@@ -16,16 +22,18 @@ export default class TeamModel implements IMatchModel {
   async findAll(): Promise<IMatch[]> {
     const dbData = await this.model.findAll();
 
-    return dbData.map(
-      ({ id, homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress }) => ({
-        id,
-        homeTeamId,
-        homeTeamGoals,
-        awayTeamId,
-        awayTeamGoals,
-        inProgress,
-      }),
-    );
+    const promises = dbData.map(async (match) => {
+      const { id, homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress } = match;
+      const matchTeamsNames = await this.teamModel.getMatchTeamsNames(homeTeamId, awayTeamId);
+
+      return {
+        id, homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress, ...matchTeamsNames,
+      };
+    });
+
+    const matchesWithTeamsNames = await Promise.all(promises);
+
+    return matchesWithTeamsNames;
   }
 
   async findById(id: IMatch[ 'id' ]): Promise<IMatch | null> {

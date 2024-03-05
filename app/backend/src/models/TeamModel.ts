@@ -30,4 +30,21 @@ export default class TeamModel implements ITeamModel {
 
     return { id, teamName };
   }
+
+  async getMatchTeamsNames(
+    homeTeamId: ITeam[ 'id' ],
+    awayTeamId: ITeam[ 'id' ],
+  ): Promise<object> {
+    const homeTeam = await this.findById(homeTeamId);
+    const awayTeam = await this.findById(awayTeamId);
+
+    return {
+      homeTeam: {
+        teamName: homeTeam?.teamName,
+      },
+      awayTeam: {
+        teamName: awayTeam?.teamName,
+      },
+    };
+  }
 }
