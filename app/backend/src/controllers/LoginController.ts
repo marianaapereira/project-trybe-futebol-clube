@@ -21,15 +21,19 @@ export default class LoginController {
   }
 
   public async getUserRole(_req: Request, res: Response) {
-    const user = res.locals.auth;
-    const serviceResponse = await this.userService.getUserById(Number(user.id));
+    try {
+      const user = res.locals.auth;
+      const serviceResponse = await this.userService.getUserById(Number(user.id));
 
-    if (serviceResponse.status !== 'SUCCESSFUL') {
-      return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+      if (serviceResponse.status !== 'SUCCESSFUL') {
+        return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+      }
+
+      const { role } = serviceResponse.data;
+
+      res.status(HTTP_OK_STATUS).json({ role });
+    } catch (error) {
+      res.status(HTTP_OK_STATUS).json(error);
     }
-
-    const { role } = serviceResponse.data;
-
-    res.status(HTTP_OK_STATUS).json({ role });
   }
 }

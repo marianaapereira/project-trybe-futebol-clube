@@ -15,8 +15,6 @@ function tokenValidation(req: Request, res: Response, next: NextFunction) {
   try {
     const validUser = jwtUtil.verify(token);
     res.locals.auth = validUser;
-
-    next();
   } catch (error) {
     return res.status(HTTP_UNAUTHORIZED_STATUS).json({ message: 'Token must be a valid token' });
   }

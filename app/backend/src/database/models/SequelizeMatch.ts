@@ -7,8 +7,8 @@ import {
 } from 'sequelize';
 import db from '.';
 
-class Match extends Model<InferAttributes<Match>,
-InferCreationAttributes<Match>> {
+class SequelizeMatch extends Model<InferAttributes<SequelizeMatch>,
+InferCreationAttributes<SequelizeMatch>> {
   declare id: CreationOptional<number>;
 
   declare homeTeamId: number;
@@ -22,7 +22,7 @@ InferCreationAttributes<Match>> {
   declare inProgress: boolean;
 }
 
-Match.init({
+SequelizeMatch.init({
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -55,4 +55,4 @@ Match.init({
   timestamps: false,
 });
 
-export default Match;
+export default SequelizeMatch;
