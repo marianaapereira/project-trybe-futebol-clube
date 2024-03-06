@@ -9,10 +9,17 @@ export default class MatchService {
     private matchModel: IMatchModel = new MatchModel(),
   ) { }
 
-  public async createMatch(team: NewEntity<IMatch>): Promise<ServiceResponse<IMatch>> {
-    const newMatch = await this.matchModel.create(team);
+  public async createMatch(match: NewEntity<IMatch>): Promise<ServiceResponse<IMatch>> {
+    const newMatch = await this.matchModel.create(match);
 
     return { status: 'SUCCESSFUL', data: newMatch };
+  }
+
+  public async updateMatch(updatedData: object, id: number): Promise<ServiceResponse<IMatch>> {
+    await this.matchModel.update(updatedData, id);
+    const updatedMatch = await this.getMatchById(id);
+
+    return updatedMatch;
   }
 
   public async getMatchById(id: number): Promise<ServiceResponse<IMatch>> {

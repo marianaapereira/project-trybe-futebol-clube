@@ -1,4 +1,3 @@
-// import { ITeamModel } from '../Interfaces/teams/ITeamModel';
 import SequelizeMatch from '../database/models/SequelizeMatch';
 import { IMatch } from '../Interfaces/matches/IMatch';
 import { IMatchModel } from '../Interfaces/matches/IMatchModel';
@@ -17,6 +16,10 @@ export default class MatchModel implements IMatchModel {
     const { id, homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress }: IMatch = dbData;
 
     return { id, homeTeamId, homeTeamGoals, awayTeamId, awayTeamGoals, inProgress };
+  }
+
+  async update(newData: NewEntity<IMatch>, id: IMatch[ 'id' ]): Promise<void> {
+    await this.model.update(newData, { where: { id } });
   }
 
   async findAll(): Promise<IMatch[]> {

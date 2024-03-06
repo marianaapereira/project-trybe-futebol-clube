@@ -41,4 +41,30 @@ export default class MatchController {
 
     res.status(HTTP_OK_STATUS).json(serviceResponse.data);
   }
+
+  public async updateMatch(req: Request, res: Response) {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    const serviceResponse = await this.matchService.updateMatch(updatedData, Number(id));
+
+    if (serviceResponse.status !== 'SUCCESSFUL') {
+      return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+    }
+
+    res.status(HTTP_OK_STATUS).json(serviceResponse.data);
+  }
+
+  public async finishMatch(req: Request, res: Response) {
+    const { id } = req.params;
+    const updatedData = { inProgress: false };
+
+    const serviceResponse = await this.matchService.updateMatch(updatedData, Number(id));
+
+    if (serviceResponse.status !== 'SUCCESSFUL') {
+      return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+    }
+
+    res.status(HTTP_OK_STATUS).json({ message: 'Finished' });
+  }
 }
