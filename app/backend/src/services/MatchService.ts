@@ -25,7 +25,7 @@ export default class MatchService {
   public async getMatchById(id: number): Promise<ServiceResponse<IMatch>> {
     const match = await this.matchModel.findById(id);
 
-    if (!match) return { status: 'NOT_FOUND', data: { message: `Team ${id} not found` } };
+    if (!match) return { status: 'NOT_FOUND', data: { message: `Match ${id} not found` } };
 
     return { status: 'SUCCESSFUL', data: match };
   }
