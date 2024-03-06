@@ -13,9 +13,20 @@ export default class MatchController {
     res.status(HTTP_CREATED_STATUS).json(serviceResponse.data);
   }
 
-  public async getAllMatches(_req: Request, res: Response) {
-    const serviceResponse = await this.matchService.getAllMatches();
+  public async getAllMatches(req: Request, res: Response) {
+    const { inProgress } = req.query;
 
+    if (inProgress === 'true') {
+      const serviceResponse = await this.matchService.getInProgressMatches();
+      return res.status(HTTP_OK_STATUS).json(serviceResponse.data);
+    }
+
+    if (inProgress === 'false') {
+      const serviceResponse = await this.matchService.getFinishedMatches();
+      return res.status(HTTP_OK_STATUS).json(serviceResponse.data);
+    }
+
+    const serviceResponse = await this.matchService.getAllMatches();
     res.status(HTTP_OK_STATUS).json(serviceResponse.data);
   }
 

@@ -36,6 +36,16 @@ export default class MatchModel implements IMatchModel {
     return matchesWithTeamsNames;
   }
 
+  public async findAllInProgress(inProgress: IMatch[ 'inProgress' ]): Promise<IMatch[]> {
+    const allMatches = await this.findAll();
+
+    const filteredMatches = allMatches.filter(
+      (match) => Boolean(match.inProgress) === Boolean(inProgress),
+    );
+
+    return filteredMatches;
+  }
+
   async findById(id: IMatch[ 'id' ]): Promise<IMatch | null> {
     const dbData = await this.model.findByPk(id);
 
