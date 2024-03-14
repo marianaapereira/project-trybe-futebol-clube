@@ -1,45 +1,54 @@
-import { IMatchModel } from '../Interfaces/matches/IMatchModel';
-import MatchModel from '../models/MatchModel';
+import { ServiceResponse } from '../Interfaces/ServiceResponse';
+import { IMatch } from '../Interfaces/matches/IMatch';
 import MatchService from './MatchService';
-
 import { ITeamModel } from '../Interfaces/teams/ITeamModel';
 import TeamModel from '../models/TeamModel';
-import TeamService from './TeamService';
-
-import { ServiceResponse } from '../Interfaces/ServiceResponse';
+import leaderboardUtils from '../utils/leaderboardUtils';
 
 export default class LeaderboardService {
   constructor(
-    private matchModel: IMatchModel = new MatchModel(),
-    private matchService = new MatchService(),
     private teamModel: ITeamModel = new TeamModel(),
-    private teamService = new TeamService(),
+    private matchService = new MatchService(),
   ) { }
 
-  // name, totalPoints, totalGames, totalVictories, totalDraws, totalLosses, goalsFavor e goalsOwn
-  // "goalsBalance": 12,
-  // "efficiency": "86.67"
+  public async getFinishedTeamMatches(teamId: number): Promise<IMatch[]> {
+    const allFinishedMatches = await this.matchService.getFinishedMatches();
+
+    if (allFinishedMatches.status === 'SUCCESSFUL') {
+      const teamMatches = allFinishedMatches.data
+        .filter((match: IMatch) => match.homeTeamId === teamId || match.awayTeamId === teamId);
+
+      return teamMatches;
+    }
+
+    return [];
+  }
 
   public async getAllTeamsLeaderboard(): Promise<ServiceResponse<object[]>> {
     const allTeams = await this.teamModel.findAll();
-    // const allMatches = await this.matchModel.findAll();
 
-    // const allTeamsMatchesData = allTeams.map((team, index) => {
-    //   if (team.id === allMatches[index].)
-    // })
+    const promises = allTeams.map(async (team) => {
+      const teamMatches = await this.getFinishedTeamMatches(team.id);
+      const teamLeaderboard = leaderboardUtils.getTeamLeaderboard(team, teamMatches);
 
-    return { status: 'SUCCESSFUL', data: allTeams };
-  }
+      return teamLeaderboard;
+    });
 
-  public async getHomeTeamsLeaderboard(): Promise<ServiceResponse<object[]>> {
-    const homeTeams = await this.teamModel.findAll();
+    const allTeamsLeaderboard = await Promise.all(promises);
+    const sortedLeaderboard = leaderboardUtils.sortLeaderboard(allTeamsLeaderboard);
 
-    return { status: 'SUCCESSFUL', data: homeTeams };
-  }
-
-  public async getAwayTeamsLeaderboard(): Promise<ServiceResponse<object[]>> {
-    const awayTeams = await this.teamModel.findAll();
-
-    return { status: 'SUCCESSFUL', data: awayTeams };
+    return { status: 'SUCCESSFUL', data: sortedLeaderboard };
   }
 }
+
+// public async getHomeTeamsLeaderboard(): Promise<ServiceResponse<object[]>> {
+//   const homeTeams = await this.teamModel.findAll();
+
+//   return { status: 'SUCCESSFUL', data: homeTeams };
+// }
+
+// public async getAwayTeamsLeaderboard(): Promise<ServiceResponse<object[]>> {
+//   const awayTeams = await this.teamModel.findAll();
+
+//   return { status: 'SUCCESSFUL', data: awayTeams };
+// }

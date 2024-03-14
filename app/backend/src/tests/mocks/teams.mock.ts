@@ -1,4 +1,4 @@
-export default [
+const teams = [
   {
     "id": 1,
     "teamName": "Avaí/Kindermann"
@@ -64,3 +64,10 @@ export default [
     "teamName": "São Paulo"
   }
 ]
+
+const errorMessage = { "message": "There is no team with such id!" }
+
+export default {
+  teams,
+  errorMessage
+}
